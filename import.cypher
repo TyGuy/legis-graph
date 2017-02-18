@@ -43,9 +43,12 @@ LOAD CSV WITH HEADERS
 FROM 'file:///bills.csv'
 AS line
 MERGE (bill:Bill { billID: line.billID })
-    ON CREATE SET bill = line;
+    ON CREATE SET bill = line,
+      bill.enacted = (CASE line.enacted WHEN 'False' THEN false ELSE true END),
+      bill.vetoed = (CASE line.vetoed WHEN 'False' THEN false ELSE true END),
+      bill.active = (CASE line.active WHEN 'False' THEN false ELSE true END);
 
-// Load 
+// Load Subjects
 
 LOAD CSV WITH HEADERS
 FROM 'file:///subjects.csv' AS line
